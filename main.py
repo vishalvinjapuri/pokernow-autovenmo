@@ -10,6 +10,16 @@ def fetch_data(url):
         print(f"Error fetching data: {e}")
         return None
 
+def display_pnl(data):
+    """Display each player's P&L and username."""
+    players_infos = data.get("playersInfos", {})
+    print("\nPlayer P&L Summary:")
+    for player_id, player_info in players_infos.items():
+        player_name = player_info['names'][0]
+        net_pnl = player_info['net']/100
+        print(f"{player_name}: ${net_pnl}")
+    print()
+
 def handle_pnl_data(data, action, client, venmo_handles):
     """Handle PNL data based on the action (request or pay)."""
     players_infos = data.get("playersInfos", {})
@@ -48,6 +58,7 @@ def main():
     data = fetch_data(url)
 
     if data:
+        display_pnl(data)
         action = input("Do you want to 'request' or 'pay' players? (type 'request' or 'pay'): ").lower().strip()
         if action in ['request', 'pay']:
             handle_pnl_data(data, action, client, venmo_handles)
